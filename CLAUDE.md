@@ -9,7 +9,7 @@ yfinance + companies.csv + Google News RSS -> data/raw/*.parquet -> Supabase Pos
 
 ## Stack
 Python 3.11+, pandas, pyarrow, yfinance, feedparser, psycopg2-binary, python-dotenv,
-sentence-transformers (all-MiniLM-L6-v2, 384 dims), anthropic SDK.
+sentence-transformers (all-MiniLM-L6-v2, 384 dims), requests (OpenRouter LLM API).
 DB: Supabase PostgreSQL + pgvector via the Session pooler URI in DATABASE_URL. Windows, venv, no Docker.
 
 ## Layout
@@ -36,5 +36,5 @@ sql/schema.sql  -> dim_company, dim_date, fact_prices, news_articles, news_chunk
 - [x] ingest/news.py
 - [x] load.py
 - [x] checks.py
-- [ ] rag.py
-- [ ] run_pipeline.py + README with sample output
+- [x] rag.py
+- [x] run_pipeline.py + README with sample output

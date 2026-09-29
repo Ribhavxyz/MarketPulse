@@ -16,11 +16,11 @@ Trust the git log over the CLAUDE.md checklist, which is not ticked yet.
 | `ingest/news.py` (Google News RSS -> parquet) | Done |
 | `load.py` (star schema upserts, SQL daily_return, news articles) | Done |
 | `checks.py` (nulls, dups, low<=close<=high, row reconciliation, `pipeline_runs`) | Done. Tested: 8/8 pass; a deliberate `low = high + 1` UPDATE on one INFY.NS row failed `price_bounds` (7 passed, 1 failed, exit 1), then repaired by rerunning `load.py` |
-| `rag.py` | Stub only |
-| `run_pipeline.py` | Stub only |
-| README sample output | "TBD" |
+| `rag.py` | Done (OpenRouter, retries + fallback model) |
+| `run_pipeline.py` | Done (stops on first failed step, logs step=pipeline) |
+| README | Done, with real sample output and screenshots in docs/ |
 
-Next: `rag.py` (approach to be agreed before any code).
+Next: all planned steps done. Ideas: dbt, scheduled GitHub Actions run, full-article text.
 
 Testing rule: never INSERT or DELETE rows in `fact_prices` to test checks, because that breaks reconciliation. Use an UPDATE on an existing row, then rerun `load.py` to repair.
 
@@ -37,3 +37,4 @@ Testing rule: never INSERT or DELETE rows in `fact_prices` to test checks, becau
 - Windows, venv, no Docker.
 - Supabase PostgreSQL + pgvector via the Session pooler URI in `DATABASE_URL`.
 - Embeddings: sentence-transformers all-MiniLM-L6-v2 (384 dims).
+- LLM: OpenRouter (no Anthropic credits). `OPENROUTER_API_KEY` and `LLM_MODEL` come from `.env`; `rag.py` calls it with `requests`.
