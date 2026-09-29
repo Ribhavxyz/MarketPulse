@@ -35,6 +35,6 @@ sql/schema.sql  -> dim_company, dim_date, fact_prices, news_articles, news_chunk
 - [ ] ingest/prices.py
 - [ ] ingest/news.py
 - [ ] load.py
-- [ ] checks.py
+- [x] checks.py
 - [ ] rag.py
 - [ ] run_pipeline.py + README with sample output
