@@ -12,7 +12,7 @@ Trust the git log over the CLAUDE.md checklist, which is not ticked yet.
 |---|---|
 | Scaffold, `sql/schema.sql`, `companies.csv` | Done |
 | Supabase connection (`test_connection.py`) | Done |
-| `ingest/prices.py` (yfinance -> parquet) | Done, small uncommitted edit |
+| `ingest/prices.py` (yfinance -> parquet) | Done (drops null-OHLC rows with a warning, normalizes dates) |
 | `ingest/news.py` (Google News RSS -> parquet) | Done |
 | `load.py` (star schema upserts, SQL daily_return, news articles) | Done |
 | `checks.py` (nulls, dups, low<=close<=high, row reconciliation, `pipeline_runs`) | Done. Tested: 8/8 pass; a deliberate `low = high + 1` UPDATE on one INFY.NS row failed `price_bounds` (7 passed, 1 failed, exit 1), then repaired by rerunning `load.py` |

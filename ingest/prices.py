@@ -37,7 +37,22 @@ def fetch_prices(ticker: str) -> pd.DataFrame | None:
             "Volume": "volume",
         }
     )
-    return history[COLUMNS]
+    history = history[COLUMNS]
+
+    null_mask = history[["open", "high", "low", "close"]].isnull().any(axis=1)
+    if null_mask.any():
+        dropped_dates = history.loc[null_mask, "date"].dt.date.tolist()
+        logger.warning(
+            "%s: dropping %d rows with null OHLC values, dates: %s",
+            ticker,
+            null_mask.sum(),
+            dropped_dates,
+        )
+        history = history[~null_mask]
+
+    history["date"] = history["date"].dt.tz_localize(None).dt.normalize().dt.date
+
+    return history
 
 
 def main() -> None:

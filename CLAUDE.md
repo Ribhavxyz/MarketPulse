@@ -30,11 +30,11 @@ sql/schema.sql  -> dim_company, dim_date, fact_prices, news_articles, news_chunk
 - If my idea is bad or my code has a bug, say so directly.
 
 ## Status
-- [ ] Scaffold + schema.sql + companies.csv
-- [ ] Supabase project created, schema run, connection tested
-- [ ] ingest/prices.py
-- [ ] ingest/news.py
-- [ ] load.py
+- [x] Scaffold + schema.sql + companies.csv
+- [x] Supabase project created, schema run, connection tested
+- [x] ingest/prices.py
+- [x] ingest/news.py
+- [x] load.py
 - [x] checks.py
 - [ ] rag.py
 - [ ] run_pipeline.py + README with sample output
