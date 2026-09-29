@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 COMPANIES_CSV = "data/reference/companies.csv"
 PRICES_PARQUET = "data/raw/prices.parquet"
+NEWS_PARQUET = "data/raw/news.parquet"
 PAGE_SIZE = 1000
 
 
@@ -136,6 +137,37 @@ def compute_daily_return(conn):
     log_pipeline_run(conn, "compute_daily_return", rows_updated)
 
 
+# Upserts news articles into news_articles (link is the dedup key).
+def load_news_articles(conn):
+    news = pd.read_parquet(NEWS_PARQUET)
+    rows = [
+        (
+            None if pd.isna(row.ticker) else row.ticker,
+            None if pd.isna(row.title) else row.title,
+            None if pd.isna(row.summary) else row.summary,
+            None if pd.isna(row.link) else row.link,
+            None if pd.isna(row.published) else row.published.to_pydatetime(),
+            None if pd.isna(row.source) else row.source,
+        )
+        for row in news.itertuples(index=False)
+    ]
+
+    with conn.cursor() as cur:
+        execute_values(
+            cur,
+            """
+            INSERT INTO news_articles (ticker, title, summary, link, published, source)
+            VALUES %s
+            ON CONFLICT (link) DO NOTHING
+            """,
+            rows,
+            page_size=PAGE_SIZE,
+        )
+    conn.commit()
+    logger.info("news_articles: processed %d rows", len(rows))
+    log_pipeline_run(conn, "load_news_articles", len(rows))
+
+
 def main():
     prices = pd.read_parquet(PRICES_PARQUET)
 
@@ -145,6 +177,7 @@ def main():
         load_dim_dates(conn, prices)
         load_fact_prices(conn, prices)
         compute_daily_return(conn)
+        load_news_articles(conn)
     finally:
         conn.close()
 
